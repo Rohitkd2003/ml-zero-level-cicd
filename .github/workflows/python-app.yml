@@ -24,12 +24,19 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Add src to PYTHONPATH
+        run: echo "PYTHONPATH=$PYTHONPATH:$PWD" >> $GITHUB_ENV
+
       - name: Run tests
         run: pytest
+
 
   deploy:
     needs: test
     runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
     if: success()
 
     steps:
@@ -38,13 +45,14 @@ jobs:
 
       - name: Create status HTML
         run: |
-          echo "<h1>Model trained successfully!</h1>" > index.html
-          echo "<p>All tests passed ✔</p>" >> index.html
+          mkdir public
+          echo "<h1>Model trained successfully!</h1>" > public/index.html
+          echo "<p>All tests passed ✔</p>" >> public/index.html
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: "./"
+          path: public
 
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
