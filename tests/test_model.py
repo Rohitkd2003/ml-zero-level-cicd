@@ -1,5 +1,5 @@
 import os
-from src.model_utils import EvenOddModel
+from model_utils import EvenOddModel
 
 def test_training():
     model = EvenOddModel()
